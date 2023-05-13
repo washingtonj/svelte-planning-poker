@@ -1,18 +1,16 @@
 <script lang="ts">
   import Input from "$lib/components/input.svelte";
   import Button from "$lib/components/button.svelte";
+    import { goto } from "$app/navigation";
 
-  function handleSubmit(e: Event) {
+  async function handleSubmit(e: Event) {
     e.preventDefault();
 
     const target = e.target as HTMLFormElement;
     const formData = new FormData(target);
     const object = Object.fromEntries(formData) as Record<string, string>;
 
-    console.log({
-      id: object.id,
-      name: object.name,
-    });
+    await goto(`/room/${object.id}?player=${object.name}`)
   }
 </script>
 

@@ -2,10 +2,26 @@ import type { RoomPort } from '../ports/room-port';
 import type { Player } from '../entities/player';
 import type { Room } from '../entities/room'
 
-export function MemoRoom(RoomPersistence: Room[]): RoomPort {
+const rooms: [] = [];
+
+export function MemoRoom(RoomPersistence: Room[] = rooms): RoomPort {
 
   function createHash() {
-    return Buffer.from(Math.random().toString() + new Date().getMilliseconds()).toString('base64');
+    const left = Math.random().toString(36).substring(2, 8);
+    const right = new Date().getMilliseconds();
+
+    return Buffer.from(left + right).toString('base64url')
+  }
+
+  function incrementPlayerId(players: Player[]) {
+    const lastPlayerId = players[players.length - 1]?.id || 0;
+    const playersLength = players.length.toString();
+
+    if (lastPlayerId === playersLength) {
+      return lastPlayerId + 1;
+    }
+
+    return playersLength;
   }
 
   function findRoom(id: string) {
@@ -31,7 +47,7 @@ export function MemoRoom(RoomPersistence: Room[]): RoomPort {
       const room = findRoom(roomId);
       
       const player: Player = {
-        id: createHash(),
+        id: incrementPlayerId(room.players),
         name: playerName
       };
       
