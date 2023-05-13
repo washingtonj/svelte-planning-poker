@@ -32,14 +32,11 @@ describe('Room-Adapter', () => {
     expect(joinedRoom.players[0].name).toBe('player-1')
   })
 
-  it('Should throw an error when room does not exist', async () => {
+  it('Should throw an error when room does not exist', () => {
     // Arrange
     const { joinRoom } = RoomAdapter.getInstance()
 
-    // Act
-    const joinRoomPromise = joinRoom('room-1', 'player-1')
-
     // Assert
-    await expect(joinRoomPromise).rejects.toThrow('Room not found')
+    expect(() => joinRoom('room-1', 'player-1')).toThrow('Room not found')
   })
 })

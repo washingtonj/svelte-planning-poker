@@ -1,35 +1,8 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-  import Card, { type CardItem } from "./card.svelte";
-  // import Selector, { type SelectorItem } from "./selector.svelte";
-
-  type Player = {
-    name: string;
-    status: 'selected' | 'waiting';
-    cardId?: string;
-  };
-
-  let player: Player = {
-    name: "Washi",
-    status: "selected",
-    cardId: "1",
-  } 
-
-  const otherPlayers: Player[] = [
-    {
-      name: "Leo",
-      status: "selected",
-      cardId: "1",
-    },
-    {
-      name: "Renan",
-      status: "waiting",
-    }
-  ]
-
-
-
-  const Items: SelectorItem[] = [
+  import Card, { type CardProps } from './card.svelte'
+  import Selector, { type SelectorItem } from "./selector.svelte";
+  
+  const items: SelectorItem[] = [
     {
       id: "1",
       value: 1,
@@ -62,19 +35,21 @@
     },
   ];
 
-  function onSelect(item: SelectorItem) {
-    player = { 
-      name: player.name,
-      status: player.status,
-      cardId: item.id,
-     };
-  }
+
+  let selected: string | undefined = undefined
+  $: usercard = { ...items.find((item) => item.id === selected), playerName: 'Washi' } as CardProps;
+
+
+
+  const onSelect = (item: SelectorItem) => selected = item.id
+
 </script>
 
 <div class="table"> 
   <div class="flex h-40">
+    <Card state={selected ? 'revealed' : 'waiting'} card={usercard} />
   </div>
-  <!-- <Selector selected={[]} {Items} {onSelect} /> -->
+  <Selector {selected} {items} {onSelect} />
 </div>
 
 <style lang="postcss">

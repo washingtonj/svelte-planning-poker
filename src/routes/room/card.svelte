@@ -1,28 +1,38 @@
 <script context="module" lang="ts">
-  export type CardItem = {
+  export type CardProps = {
+    playerName: string;
     value: number | string;
-    description?: string;
+    description: string;
   };
 </script>
 
 <script lang="ts">
-  export let playerName: string;
-  export let card: CardItem | undefined;
+  export let card: CardProps;
+  export let state: "waiting" | "voted" | "revealed";
 
   const waiting = !card;
-  
 </script>
 
 <div class="table-cards">
   <div class="table-card cursor-default">
     <p
-      title={playerName}
+      title={card.playerName}
       class="w-full text-start text-sm overflow-hidden whitespace-nowrap text-ellipsis"
     >
-      {playerName}
+      {card.playerName}
     </p>
-    <p class="text-2xl">{waiting ? '🤫' : card?.value}</p>
-    <p class="w-full text-end text-sm">{waiting ? '...' : card?.description}</p>
+    {#if state === "revealed"}
+      <p class="text-2xl">{card.value}</p>
+      <p class="w-full text-end text-sm">{card.description}</p>
+    {/if}
+    {#if state === "waiting"}
+      <p class="text-2xl">{'⏱️'}</p>
+      <p class="w-full text-end text-sm">{'...'}</p>
+    {/if}
+    {#if state === "voted"}
+      <p class="text-2xl">{'✅'}</p>
+      <p class="w-full text-end text-sm">{'...'}</p>
+    {/if}
   </div>
 </div>
 

@@ -7,19 +7,17 @@
 </script>
 
 <script lang="ts">
-  export let selected: SelectorItem | undefined = undefined;
+  export let selected: string | undefined = undefined;
   export let onSelect: (item: SelectorItem) => void;
-  export let Items: SelectorItem[];
-
-  $: onSelect;
+  export let items: SelectorItem[];
 </script>
 
 <div class="selector">
-  {#each Items as item}
+  {#each items as item}
     <div
       title={item.description}
       class="selector__item"
-      class:selector__item--selected={selected?.value === item.value}
+      class:selector__item--selected={selected === item.id}
       on:click={() => onSelect(item)}
       on:keypress={() => onSelect(item)}
     >
