@@ -1,6 +1,5 @@
-import type { Room } from '$lib/server/entities/room'
-
 export interface RoomPort {
-  createRoom(name: string): Promise<Room>;
-  joinRoom(id: string, username: string): Promise<Room>;
+  createRoom(name: string): Promise<{ roomid: string }>;
+  addPlayer(roomId: string, playerName: string): Promise<{ playerid: string }>;
+  setCroupier(roomId: string, playerId: string): Promise<void>;
 }

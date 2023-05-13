@@ -1,30 +1,25 @@
-import { RoomAdapter } from '$lib/server/adapters/room-adapter'
+import { MemoRoom } from '$lib/server/adapters/memo-room'
+import { CreateRoom } from '$lib/server/usecases/create-room'
+import z from 'zod'
 
-export async function GET({ url }) {
-  const id = url.searchParams.get('id')
-  const username = url.searchParams.get('username')
+const rooms: [] = []
 
-  if (!id || !username) {
-    return new Response(JSON.stringify({ error: 'Need some params' }), { status: 400 })
+export async function POST(event) {
+  const { roomName, croupierName } = await event.request.json()
+
+  const schema = z.object({
+    roomName: z.string(),
+    croupierName: z.string()
+  })
+
+  try {
+    schema.parse({ roomName, croupierName })
+  } catch (error) {
+    return new Response(JSON.stringify({ error }), { status: 400 })
   }
 
-  const { joinRoom } = RoomAdapter.getInstance()
-  const room = await joinRoom(id, username)
-
-  return new Response(JSON.stringify(room))
-}
-
-
-export async function POST({ url }) {
-  const name = url.searchParams.get('name')
-
-  if (!name) {
-    return new Response(JSON.stringify({ error: 'No name provided' }), { status: 400 })
-  }
-
-  const { createRoom } = RoomAdapter.getInstance()
-  const room = await createRoom(name)
-
+  const usecase = CreateRoom(MemoRoom(rooms))
+  const room = await usecase(roomName, croupierName)
 
   return new Response(JSON.stringify(room))
 }
