@@ -14,10 +14,8 @@ export const load = (async (event) => {
   const id = (event.params as any).id as string
   const player = event.url.searchParams.get('player') as string
 
-  const params = { id, player }
-
   try {
-    schema.parse(params)
+    schema.parse({ id, player })
   } catch (err: any) {
 
     const message = err.errors.map((error: any) => ({ [error.path[0]]: error.message }))[0]
@@ -27,17 +25,13 @@ export const load = (async (event) => {
     })
   }
 
-  const usecase = JoinRoom(MemoRoom())
-
-
+  
+  
   try {
-    const info = await usecase(params.id, params.player)
+    const usecase = JoinRoom(MemoRoom())
+    const data = await usecase(id, player)
 
-    return {
-      props: {
-        info
-      }
-    }
+    return data
 
   } catch (err: any) {
     throw error(500, {

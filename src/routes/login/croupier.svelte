@@ -17,14 +17,14 @@
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        roomName: object.room,
-        croupierName: object.croupier,
+        name: object.room,
+        croupier: object.croupier,
       }),
     });
 
-    const { id } = await response.json();
+    const { room } = await response.json();
 
-    await goto(`/room/${id}?player=${object.croupier}`);
+    await goto(`/room/${room.id}?player=${object.croupier}`);
   }
 </script>
 

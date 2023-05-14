@@ -7,21 +7,21 @@ import { MemoRoom } from '$lib/server/adapters/memo-room'
   Tell us the name of the room and your name and we will create a room for you.
 */
 export async function POST(event) {
-  const { roomName, croupierName } = await event.request.json()
+  const { name, croupier } = await event.request.json()
 
   const schema = z.object({
-    roomName: z.string(),
-    croupierName: z.string()
+    name: z.string(),
+    croupier: z.string()
   })
 
   try {
-    schema.parse({ roomName, croupierName })
+    schema.parse({ name, croupier })
   } catch (error) {
     return new Response(JSON.stringify({ error }), { status: 400 })
   }
 
   const usecase = CreateRoom(MemoRoom())
-  const room = await usecase(roomName, croupierName)
+  const data = await usecase(name, croupier)
 
-  return new Response(JSON.stringify(room))
+  return new Response(JSON.stringify(data))
 }

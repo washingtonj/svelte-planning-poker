@@ -1,59 +1,57 @@
 <script lang="ts">
-  import Card, { type CardProps } from './card.svelte'
+  import Card, { type CardProps } from "./card.svelte";
   import Selector, { type SelectorItem } from "./selector.svelte";
-  
-  const items: SelectorItem[] = [
-    {
-      id: "1",
-      value: 1,
-      description: "30 minutes",
-    },
-    {
-      id: "2",
-      value: 2,
-      description: "Half an hour",
-    },
-    {
-      id: "3",
-      value: 3,
-      description: "A day",
-    },
-    {
-      id: "4",
-      value: 5,
-      description: "A week",
-    },
-    {
-      id: "5",
-      value: 8,
-      description: "Two weeks",
-    },
-    {
-      id: "6",
-      value: "☕️",
-      description: "Coffee break",
-    },
-  ];
+  import Button from "$lib/components/button.svelte";
+  import type { PageServerData } from "./$types";
 
+  export let data: PageServerData;
 
-  let selected: string | undefined = undefined
-  $: usercard = { ...items.find((item) => item.id === selected), playerName: 'Washi' } as CardProps;
+  let selected: string | undefined = undefined;
 
+  $: playercard = {
+    ...data.room.cards.find((item) => item.id === selected),
+    playerName: data.player.name,
+  } as CardProps;
 
+  $: playerscard = data.room.players.map(player => ({
+    playerName: player.name,
+    description: "",
+    value: 0,
+  }) as CardProps)
 
-  const onSelect = (item: SelectorItem) => selected = item.id
+  $: items = data.room.cards.map((item) => ({
+    id: item.id,
+    name: data.player.name,
+    description: item.description,
+    value: item.value,
+  })) as SelectorItem[];
 
+  const onSelect = (item: SelectorItem) => (selected = item.id);
 </script>
 
-<div class="table"> 
-  <div class="flex h-40">
-    <Card state={selected ? 'revealed' : 'waiting'} card={usercard} />
-  </div>
-  <Selector {selected} {items} {onSelect} />
-</div>
+<div class="container h-full max-w-screen-2xl m-auto p-4">
+  <div class="flex flex-col h-full">
+    <span>
+      <h1 class="text-2xl font-bold">{data.room.name}</h1>
+      <p>{data.room.id}</p>
+    </span>
 
-<style lang="postcss">
-  .table {
-    @apply h-full flex flex-col items-center justify-center;
-  }
-</style>
+    <div class="flex flex-col h-full items-center justify-center">
+      <div class="flex">
+        <Card state={selected ? "revealed" : "waiting"} card={playercard} />
+        {#each playerscard as card}
+          <Card state="waiting" card={card} />
+        {/each}
+      </div>
+      <Selector {selected} {items} {onSelect} />
+
+      <div class="w-32 mt-8">
+        <Button style="width: 100%;">Reveal</Button>
+      </div>
+    </div>
+
+    <div class="flex flex-col">
+      <div />
+    </div>
+  </div>
+</div>

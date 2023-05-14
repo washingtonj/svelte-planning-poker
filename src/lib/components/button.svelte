@@ -1,6 +1,7 @@
 <script lang="ts">
   export let onClick: () => void = () => {};
   export let type: "submit" | "button" | "ancor" = "button";
+  export let style: string = "";
 </script>
 
 {#if type === "ancor"}
@@ -8,7 +9,7 @@
     <slot />
   </button>
 {:else}
-  <button class="button" {type} on:click={onClick}>
+  <button class="button" {style} {type} on:click={onClick}>
     <slot />
   </button>
 {/if}
@@ -20,7 +21,7 @@
   }
 
   .button {
-    @apply w-full text-white font-bold py-2 rounded-lg bg-gray-950;
+    @apply text-white font-bold py-2 px-4 rounded-lg bg-gray-950;
     @apply hover:bg-gray-800 transition-colors;
   }
 </style>

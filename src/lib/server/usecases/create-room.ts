@@ -1,12 +1,12 @@
 import type { RoomPort } from "$lib/server/ports/room-port";
 
 export function CreateRoom(RoomPort: RoomPort) {
-  return async function (roomname: string, croupier: string) {
+  return async function (name: string, croupier: string) {
     
-    const { roomid } = await RoomPort.createRoom(roomname);
-    const { playerid } = await RoomPort.addPlayer(roomid, croupier)
-    await RoomPort.setCroupier(roomid, playerid);
+    const room = await RoomPort.createRoom(name);
+    const player = await RoomPort.addPlayer(room.id, croupier)
+    await RoomPort.setCroupier(room.id, player.id);
     
-    return { id: roomid, name: roomname, croupier: playerid };
+    return { player, room };
   };
 }

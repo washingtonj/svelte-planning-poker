@@ -1,8 +1,41 @@
 import type { RoomPort } from '../ports/room-port';
 import type { Player } from '../entities/player';
-import type { Room } from '../entities/room'
+import type { Room, Card } from '../entities/room'
 
 const rooms: [] = [];
+
+const cards: Card[] = [
+  {
+    id: "1",
+    value: '1',
+    description: "30 minutes",
+  },
+  {
+    id: "2",
+    value: '2',
+    description: "Half an hour",
+  },
+  {
+    id: "3",
+    value: '3',
+    description: "A day",
+  },
+  {
+    id: "4",
+    value: '5',
+    description: "A week",
+  },
+  {
+    id: "5",
+    value: '8',
+    description: "Two weeks",
+  },
+  {
+    id: "6",
+    value: "☕️",
+    description: "Coffee break",
+  },
+];
 
 export function MemoRoom(RoomPersistence: Room[] = rooms): RoomPort {
 
@@ -35,12 +68,13 @@ export function MemoRoom(RoomPersistence: Room[] = rooms): RoomPort {
       const room: Room = {
         id: createHash(),
         name,
+        cards,
         players: []
       };
 
       RoomPersistence.push(room);
 
-      return Promise.resolve({ roomid: room.id });
+      return Promise.resolve(room);
     },
 
     addPlayer(roomId, playerName) {
@@ -52,7 +86,7 @@ export function MemoRoom(RoomPersistence: Room[] = rooms): RoomPort {
       };
       
       room.players.push(player);
-      return Promise.resolve({ playerid: player.id });
+      return Promise.resolve(player);
     },
 
     setCroupier(roomId, playerId) {
@@ -61,6 +95,11 @@ export function MemoRoom(RoomPersistence: Room[] = rooms): RoomPort {
       if (!player) throw new Error('Player not found');
       room.croupier = player;
       return Promise.resolve();
+    },
+
+    getRoom(roomId) {
+      const room = findRoom(roomId);
+      return Promise.resolve(room);
     },
   }
 }
