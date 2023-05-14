@@ -1,20 +1,24 @@
 <script lang="ts">
+  import { goto } from "$app/navigation";
   import Input from "$lib/components/input.svelte";
   import Button from "$lib/components/button.svelte";
-    import { goto } from "$app/navigation";
+  import { handleSubmit } from "$lib/form-utils";
 
-  async function handleSubmit(e: Event) {
-    e.preventDefault();
+  interface FormSchema {
+    name: string;
+    id: string;
+  }
 
-    const target = e.target as HTMLFormElement;
-    const formData = new FormData(target);
-    const object = Object.fromEntries(formData) as Record<string, string>;
-
-    await goto(`/room/${object.id}?player=${object.name}`)
+  async function submit(data: FormSchema) {
+    const { name, id } = data;
+    await goto(`/room/${id}?player=${name}`);
   }
 </script>
 
-<form class="w-full flex flex-col gap-3" on:submit={handleSubmit}>
+<form
+  class="w-full flex flex-col gap-3"
+  on:submit={(event) => handleSubmit(event, submit)}
+>
   <Input name="name" placeholder="Enter your name" required />
   <Input name="id" placeholder="Enter the room id" required />
   <Button type="submit">Join</Button>
