@@ -77,11 +77,11 @@ export function MemoRoom(RoomPersistence: Room[] = rooms): RoomPort {
       return Promise.resolve(room);
     },
 
-    addPlayer(roomId, playerName) {
+    addPlayer(roomId, playerName, playerId) {
       const room = findRoom(roomId);
       
       const player: Player = {
-        id: incrementPlayerId(room.players),
+        id: playerId,
         name: playerName
       };
       

@@ -14,9 +14,11 @@ export const load = (async (event) => {
     player: z.string()
   }), { id, player })
 
+  const playerId = event.cookies.get('session_id')!
+
   try {
     const usecase = JoinRoom(MemoRoom())
-    const data = await usecase(id, player)
+    const data = await usecase({ playerId, playerName: player, roomId: id })
 
     return data
 

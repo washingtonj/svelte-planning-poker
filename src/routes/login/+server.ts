@@ -15,8 +15,10 @@ export async function POST(event) {
     croupier: z.string()
   }), { name, croupier })
 
+  const userId = event.cookies.get('session_id')!
+
   const usecase = CreateRoom(MemoRoom())
-  const data = await usecase(name, croupier)
+  const data = await usecase({ roomName: name, croupierName: croupier, croupierId: userId })
 
   return new Response(JSON.stringify(data))
 }
